@@ -43,9 +43,9 @@ story_location: "{project-root}/_bmad-output/implementation-artifacts"
 
 development_status:
   epic-1: in-progress
-  1-1-initialize-project-and-verify-deployment-pipeline: in-progress
-  1-2-define-canonical-content-schema-and-safe-content-loading: backlog
-  1-3-display-logo-section-with-empty-state: backlog
+  1-1-initialize-project-and-verify-deployment-pipeline: done
+  1-2-define-canonical-content-schema-and-safe-content-loading: done
+  1-3-display-logo-section-with-empty-state: in-progress
   1-4-display-image-slider-with-auto-advance-manual-navigation-and-pause-control: backlog
   1-5-display-memorial-story-with-rich-text-formatting: backlog
   1-6-display-article-links-section: backlog
