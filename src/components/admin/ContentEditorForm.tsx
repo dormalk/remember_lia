@@ -26,10 +26,7 @@ export function ContentEditorForm({ content }: { content: ContentDocument }) {
     setStatus("saving");
     setErrorMessage(null);
 
-    // Merge local edits on top of current content prop so logo/slider saved by
-    // other editors are not overwritten by our stale initial snapshot.
     const result: SaveResult = await saveContent({
-      ...content,
       story: doc.story,
       articles: doc.articles,
       social: doc.social,

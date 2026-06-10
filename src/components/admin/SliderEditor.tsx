@@ -124,7 +124,6 @@ export function SliderEditor({ content }: { content: ContentDocument }) {
     );
 
     const result: SaveResult = await saveContent({
-      ...content,
       // Drop any entry that never had an image assigned
       slider: resolvedSlider.filter((img) => img.imageUrl),
     });

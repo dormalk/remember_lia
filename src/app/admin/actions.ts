@@ -7,6 +7,7 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { contentSchema, type ContentDocument } from "@/lib/content-schema";
 import { sanitizeRichText } from "@/lib/sanitize";
 import { writeContentBlob } from "@/lib/blob";
+import { getContent } from "@/lib/content-store";
 
 export async function logoutAction() {
   const cookieStore = await cookies();
@@ -30,15 +31,22 @@ function sanitizeUrl(url: string): string {
 
 /**
  * The ONLY function that writes to content.json.
- * Validates, sanitizes, persists, and revalidates the public page.
+ * Merges the given partial update onto the latest persisted document
+ * (read fresh from Blob, never from a client-held snapshot), then
+ * validates, sanitizes, persists, and revalidates the public page.
  */
-export async function saveContent(document: ContentDocument): Promise<SaveResult> {
+export async function saveContent(partial: Partial<ContentDocument>): Promise<SaveResult> {
   // Defense-in-depth auth check (proxy.ts already blocks unauthenticated requests)
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token || !(await verifySessionToken(token))) {
     return { success: false, error: "לא מורשה" };
   }
+
+  // Merge onto the latest persisted document so a save from one editor never
+  // overwrites fields owned by another editor with a stale client snapshot.
+  const current = await getContent();
+  const document: ContentDocument = { ...current, ...partial };
 
   // Sanitize all inputs before schema validation
   const sanitized: ContentDocument = {

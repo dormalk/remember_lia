@@ -4,6 +4,10 @@ import { SliderEditor } from "@/components/admin/SliderEditor";
 import { ContentEditorForm } from "@/components/admin/ContentEditorForm";
 import { logoutAction } from "./actions";
 
+// Admin page must always reflect the latest saved content — never serve a
+// cached/stale snapshot across saves.
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const content = await getContent();
 

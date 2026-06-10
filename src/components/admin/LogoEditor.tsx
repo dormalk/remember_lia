@@ -81,7 +81,6 @@ export function LogoEditor({ content }: { content: ContentDocument }) {
 
     setStatus("saving");
     const result: SaveResult = await saveContent({
-      ...content,
       logo: { imageUrl: finalUrl, title },
     });
 
