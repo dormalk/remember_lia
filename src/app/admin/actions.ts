@@ -52,7 +52,11 @@ export async function saveContent(partial: Partial<ContentDocument>): Promise<Sa
   const sanitized: ContentDocument = {
     ...document,
     story: sanitizeRichText(document.story),
-    articles: document.articles.map((a) => ({ ...a, url: sanitizeUrl(a.url) })),
+    articles: document.articles.map((a) => ({
+      ...a,
+      url: sanitizeUrl(a.url),
+      imageUrl: sanitizeUrl(a.imageUrl),
+    })),
     social: {
       whatsapp: sanitizeUrl(document.social.whatsapp),
       instagram: sanitizeUrl(document.social.instagram),

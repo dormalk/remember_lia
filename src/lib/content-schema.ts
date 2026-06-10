@@ -20,6 +20,7 @@ export const articleSchema = z.object({
   title: z.string().default(""),
   sourceName: z.string().default(""),
   url: z.string().default(""),
+  imageUrl: z.string().default(""),
 });
 
 export const socialLinksSchema = z.object({

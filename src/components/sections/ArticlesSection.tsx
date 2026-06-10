@@ -42,12 +42,22 @@ export function ArticlesSection({ articles }: { articles: Article[] }) {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col gap-1 rounded-xl border border-foreground/10 bg-foreground/[0.03] px-4 py-3 transition hover:bg-foreground/[0.07] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              className="flex items-center gap-3 rounded-xl border border-foreground/10 bg-foreground/[0.03] px-4 py-3 transition hover:bg-foreground/[0.07] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
             >
-              <span className="text-base font-medium leading-snug">{article.title}</span>
-              {article.sourceName.trim() ? (
-                <span className="text-sm text-foreground/60">{article.sourceName}</span>
+              {article.imageUrl.trim() ? (
+                // eslint-disable-next-line @next/next/no-img-element -- external preview image, not optimizable by next/image
+                <img
+                  src={article.imageUrl}
+                  alt=""
+                  className="h-14 w-14 shrink-0 rounded-lg object-cover"
+                />
               ) : null}
+              <div className="flex min-w-0 flex-col gap-1">
+                <span className="text-base font-medium leading-snug">{article.title}</span>
+                {article.sourceName.trim() ? (
+                  <span className="text-sm text-foreground/60">{article.sourceName}</span>
+                ) : null}
+              </div>
             </a>
           </li>
         ))}

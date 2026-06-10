@@ -10,11 +10,14 @@ interface ArticlesEditorProps {
 }
 
 function newArticle(): Article {
-  return { title: "", sourceName: "", url: "" };
+  return { title: "", sourceName: "", url: "", imageUrl: "" };
 }
+
+type FetchStatus = "idle" | "loading" | "error";
 
 export function ArticlesEditor({ articles, onChange, disabled }: ArticlesEditorProps) {
   const [entries, setEntries] = useState<Article[]>(articles);
+  const [fetchStatus, setFetchStatus] = useState<Record<number, FetchStatus>>({});
 
   function update(next: Article[]) {
     setEntries(next);
@@ -31,6 +34,11 @@ export function ArticlesEditor({ articles, onChange, disabled }: ArticlesEditorP
 
   function removeEntry(index: number) {
     update(entries.filter((_, i) => i !== index));
+    setFetchStatus((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
   }
 
   function moveEntry(index: number, direction: "up" | "down") {
@@ -39,6 +47,45 @@ export function ArticlesEditor({ articles, onChange, disabled }: ArticlesEditorP
     const next = [...entries];
     [next[index], next[target]] = [next[target], next[index]];
     update(next);
+  }
+
+  async function fetchPreview(index: number) {
+    const url = entries[index]?.url.trim();
+    if (!url) return;
+
+    setFetchStatus((prev) => ({ ...prev, [index]: "loading" }));
+
+    try {
+      const res = await fetch("/api/admin/fetch-metadata", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!res.ok) {
+        setFetchStatus((prev) => ({ ...prev, [index]: "error" }));
+        return;
+      }
+
+      const data = (await res.json()) as { title: string; sourceName: string; imageUrl: string };
+
+      setEntries((prev) => {
+        const next = prev.map((e, i) => {
+          if (i !== index) return e;
+          return {
+            ...e,
+            title: e.title.trim() ? e.title : data.title,
+            sourceName: e.sourceName.trim() ? e.sourceName : data.sourceName,
+            imageUrl: data.imageUrl || e.imageUrl,
+          };
+        });
+        onChange(next);
+        return next;
+      });
+      setFetchStatus((prev) => ({ ...prev, [index]: "idle" }));
+    } catch {
+      setFetchStatus((prev) => ({ ...prev, [index]: "error" }));
+    }
   }
 
   return (
@@ -121,12 +168,43 @@ export function ArticlesEditor({ articles, onChange, disabled }: ArticlesEditorP
                   type="url"
                   value={entry.url}
                   onChange={(e) => updateEntry(index, { url: e.target.value })}
+                  onBlur={() => fetchPreview(index)}
                   disabled={disabled}
                   placeholder="https://..."
                   dir="ltr"
                   className="w-full rounded-lg border border-foreground/20 bg-background px-3 py-2.5 text-base outline-none focus:border-foreground/50 focus:ring-2 focus:ring-foreground/10 disabled:opacity-50"
                 />
+                {fetchStatus[index] === "loading" ? (
+                  <p className="text-sm text-foreground/50">טוען תצוגה מקדימה...</p>
+                ) : null}
+                {fetchStatus[index] === "error" ? (
+                  <p className="text-sm text-red-600">לא ניתן היה לטעון פרטים מהקישור</p>
+                ) : null}
               </div>
+
+              {entry.imageUrl ? (
+                <div className="flex items-center gap-3 rounded-lg border border-foreground/10 bg-foreground/[0.03] p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- external preview image, not optimizable by next/image */}
+                  <img
+                    src={entry.imageUrl}
+                    alt=""
+                    className="h-16 w-16 shrink-0 rounded-md object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{entry.title || "—"}</p>
+                    <p className="truncate text-sm text-foreground/60">{entry.sourceName || "—"}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => updateEntry(index, { imageUrl: "" })}
+                    disabled={disabled}
+                    aria-label="הסר תצוגה מקדימה"
+                    className="shrink-0 rounded p-1 text-foreground/50 transition hover:text-foreground disabled:opacity-30"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         ))
