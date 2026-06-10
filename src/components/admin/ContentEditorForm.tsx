@@ -8,6 +8,7 @@ import { RichTextEditor } from "./RichTextEditor";
 import { ArticlesEditor } from "./ArticlesEditor";
 import { SocialLinksEditor } from "./SocialLinksEditor";
 import { ContactEditor } from "./ContactEditor";
+import { ShareEditor } from "./ShareEditor";
 import type { ContentDocument } from "@/lib/content-schema";
 
 type Status = "idle" | "saving" | "success" | "error";
@@ -31,6 +32,7 @@ export function ContentEditorForm({ content }: { content: ContentDocument }) {
       articles: doc.articles,
       social: doc.social,
       contact: doc.contact,
+      share: doc.share,
     });
 
     if (result.success) {
@@ -93,6 +95,20 @@ export function ContentEditorForm({ content }: { content: ContentDocument }) {
           contact={doc.contact}
           onChange={(contact) => {
             setDoc((prev) => ({ ...prev, contact }));
+            setStatus("idle");
+            setErrorMessage(null);
+            setIsDirty(true);
+          }}
+          disabled={isSaving}
+        />
+      </section>
+
+      <section className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] px-4 py-6">
+        <h2 className="mb-5 text-lg font-semibold">שיתוף</h2>
+        <ShareEditor
+          share={doc.share}
+          onChange={(share) => {
+            setDoc((prev) => ({ ...prev, share }));
             setStatus("idle");
             setErrorMessage(null);
             setIsDirty(true);

@@ -36,6 +36,10 @@ export const contactSchema = z.object({
   link: z.string().default(""),
 });
 
+export const shareSchema = z.object({
+  text: z.string().default(""),
+});
+
 // Nested objects must default via a function that re-parses `{}` through the
 // section schema — a bare `.default({})` would skip the section schema's own
 // field-level defaults and leave e.g. `logo` as `{}` instead of `{ imageUrl: "", title: "" }`.
@@ -46,6 +50,7 @@ export const contentSchema = z.object({
   articles: z.array(articleSchema).default([]),
   social: socialLinksSchema.default(() => socialLinksSchema.parse({})),
   contact: contactSchema.default(() => contactSchema.parse({})),
+  share: shareSchema.default(() => shareSchema.parse({})),
 });
 
 export type Logo = z.infer<typeof logoSchema>;
@@ -53,4 +58,5 @@ export type SliderImage = z.infer<typeof sliderImageSchema>;
 export type Article = z.infer<typeof articleSchema>;
 export type SocialLinks = z.infer<typeof socialLinksSchema>;
 export type ContactInfo = z.infer<typeof contactSchema>;
+export type ShareSettings = z.infer<typeof shareSchema>;
 export type ContentDocument = z.infer<typeof contentSchema>;

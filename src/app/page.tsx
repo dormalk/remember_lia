@@ -1,6 +1,7 @@
 import { ArticlesSection } from "@/components/sections/ArticlesSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { LogoSection } from "@/components/sections/LogoSection";
+import { ShareSection } from "@/components/sections/ShareSection";
 import { SliderSection } from "@/components/sections/SliderSection";
 import { SocialLinksSection } from "@/components/sections/SocialLinksSection";
 import { StorySection } from "@/components/sections/StorySection";
@@ -23,6 +24,7 @@ export default async function Home() {
       <ArticlesSection articles={content.articles} />
       <SocialLinksSection social={content.social} />
       <ContactSection contact={content.contact} />
+      <ShareSection share={content.share} />
     </main>
   );
 }
