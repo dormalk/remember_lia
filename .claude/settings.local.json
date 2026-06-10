@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(env)"
+      "Bash(env)",
+      "Bash(npm run *)"
     ]
   }
 }

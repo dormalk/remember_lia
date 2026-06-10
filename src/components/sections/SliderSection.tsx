@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useReducer, useRef, useState, useSyncExternalStore, type TouchEvent } from "react";
+import { useEffect, useReducer, useRef, useState, useSyncExternalStore, type KeyboardEvent, type TouchEvent } from "react";
 
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { SliderImage } from "@/lib/content-schema";
@@ -141,6 +141,16 @@ export function SliderSection({ slider }: { slider: SliderImage[] }) {
     touchStartXRef.current = event.touches[0]?.clientX ?? null;
   };
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goToNext(); // RTL: ArrowLeft = toward logical end = next slide
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goToPrevious(); // RTL: ArrowRight = toward logical start = previous slide
+    }
+  };
+
   const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
     const startX = touchStartXRef.current;
     touchStartXRef.current = null;
@@ -162,19 +172,36 @@ export function SliderSection({ slider }: { slider: SliderImage[] }) {
   };
 
   return (
-    <section className="flex w-full flex-col items-center gap-4 px-6 py-10">
+    <section
+      aria-roledescription="carousel"
+      aria-label="גלריית תמונות"
+      className="flex w-full flex-col items-center gap-4 px-6 py-10"
+    >
+      {hasMultiple ? (
+        <div aria-live="polite" aria-atomic="true" className="sr-only">
+          {`תמונה ${index + 1} מתוך ${slider.length}`}
+        </div>
+      ) : null}
       <div
         className="relative w-full max-w-md touch-pan-y"
+        tabIndex={hasMultiple ? 0 : undefined}
+        onKeyDown={hasMultiple ? handleKeyDown : undefined}
         onTouchStart={hasMultiple ? handleTouchStart : undefined}
         onTouchEnd={hasMultiple ? handleTouchEnd : undefined}
       >
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
+        <div
+          role="group"
+          aria-roledescription="שקופית"
+          aria-label={`תמונה ${index + 1} מתוך ${slider.length}`}
+          className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl"
+        >
           <Image
             src={current.imageUrl}
             alt={current.caption}
             fill
             sizes="(min-width: 640px) 28rem, 100vw"
             className="object-cover"
+            priority={index === 0}
           />
         </div>
 

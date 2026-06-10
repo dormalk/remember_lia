@@ -1,5 +1,5 @@
 # generated: 2026-06-08
-# last_updated: 2026-06-08 (Story 1.4 -> review)
+# last_updated: 2026-06-09 (Story 1.5 created -> ready-for-dev)
 # project: JusticForLia
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,29 +35,29 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 project: JusticForLia
 project_key: NOKEY
 tracking_system: file-system
 story_location: "{project-root}/_bmad-output/implementation-artifacts"
 
 development_status:
-  epic-1: in-progress
+  epic-1: done
   1-1-initialize-project-and-verify-deployment-pipeline: done
   1-2-define-canonical-content-schema-and-safe-content-loading: done
   1-3-display-logo-section-with-empty-state: done
   1-4-display-image-slider-with-auto-advance-manual-navigation-and-pause-control: done
-  1-5-display-memorial-story-with-rich-text-formatting: backlog
-  1-6-display-article-links-section: backlog
-  1-7-display-social-and-community-links-section: backlog
-  1-8-display-contact-and-help-section: backlog
-  1-9-assemble-full-page-in-fixed-order-with-mobile-first-performance-and-accessibility-polish: backlog
+  1-5-display-memorial-story-with-rich-text-formatting: done
+  1-6-display-article-links-section: done
+  1-7-display-social-and-community-links-section: done
+  1-8-display-contact-and-help-section: done
+  1-9-assemble-full-page-in-fixed-order-with-mobile-first-performance-and-accessibility-polish: done
   epic-1-retrospective: optional
-  epic-2: backlog
-  2-1-secure-admin-authentication-and-route-protection: backlog
-  2-2-single-save-path-for-all-content-changes: backlog
-  2-3-edit-logo-and-two-step-image-upload: backlog
-  2-4-manage-slider-images-add-remove-reorder-and-caption: backlog
-  2-5-edit-story-rich-text-articles-social-links-and-contact-info: backlog
-  2-6-trustworthy-mobile-editing-loading-states-unsaved-change-warnings-and-error-recovery: backlog
+  epic-2: done
+  2-1-secure-admin-authentication-and-route-protection: done
+  2-2-single-save-path-for-all-content-changes: done
+  2-3-edit-logo-and-two-step-image-upload: done
+  2-4-manage-slider-images-add-remove-reorder-and-caption: done
+  2-5-edit-story-rich-text-articles-social-links-and-contact-info: done
+  2-6-trustworthy-mobile-editing-loading-states-unsaved-change-warnings-and-error-recovery: done
   epic-2-retrospective: optional

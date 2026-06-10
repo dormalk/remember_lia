@@ -1,5 +1,9 @@
+import { ArticlesSection } from "@/components/sections/ArticlesSection";
+import { ContactSection } from "@/components/sections/ContactSection";
 import { LogoSection } from "@/components/sections/LogoSection";
 import { SliderSection } from "@/components/sections/SliderSection";
+import { SocialLinksSection } from "@/components/sections/SocialLinksSection";
+import { StorySection } from "@/components/sections/StorySection";
 import { getContent } from "@/lib/content-store";
 
 /**
@@ -15,6 +19,10 @@ export default async function Home() {
     <main className="flex min-h-full w-full flex-1 flex-col items-center bg-background">
       <LogoSection logo={content.logo} />
       <SliderSection slider={content.slider} />
+      <StorySection story={content.story} />
+      <ArticlesSection articles={content.articles} />
+      <SocialLinksSection social={content.social} />
+      <ContactSection contact={content.contact} />
     </main>
   );
 }

@@ -1,4 +1,4 @@
-import { get } from "@vercel/blob";
+import { get, put } from "@vercel/blob";
 
 /**
  * The ONLY module that imports `@vercel/blob` directly. Every other module
@@ -18,6 +18,21 @@ export const CONTENT_PATHNAME = "content.json";
  * missing one, and `getContent()` must never throw on either. Any other
  * failure (network, auth, etc.) propagates to the caller.
  */
+/**
+ * Overwrites `content.json` in Blob with a new document.
+ * Uses `addRandomSuffix: false` + `allowOverwrite: true` so the pathname is stable
+ * and callers can always reach the latest version at the same URL — no pointer DB needed.
+ * MUST only be called from `saveContent` in `app/admin/actions.ts`.
+ */
+export async function writeContentBlob(document: unknown): Promise<void> {
+  await put(CONTENT_PATHNAME, JSON.stringify(document), {
+    access: "public",
+    contentType: "application/json",
+    addRandomSuffix: false,
+    allowOverwrite: true,
+  });
+}
+
 export async function readContentBlob(): Promise<unknown | null> {
   const result = await get(CONTENT_PATHNAME, { access: "public" });
   if (!result || !result.stream) {
