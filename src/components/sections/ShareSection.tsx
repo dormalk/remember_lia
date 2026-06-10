@@ -21,23 +21,33 @@ function InstagramIcon() {
 
 /**
  * Share section (bottom of page). The share text is admin-configurable
- * (`share.text`) and is included alongside the page URL when sharing.
- * Facebook supports a direct share-dialog URL with prefilled text; Instagram
- * has no equivalent web intent, so we use the Web Share API where available
- * (surfaces Instagram as a target on mobile) and fall back to copying the
- * text + link to the clipboard.
+ * (`share.text`). Facebook's share dialog and Instagram both ignore
+ * prefilled post text from web links, so for both targets we copy the
+ * text to the clipboard first and prompt the user to paste it into the
+ * post they're about to create.
  */
 export function ShareSection({ share }: { share: ShareSettings }) {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
 
-  function shareToFacebook() {
-    const pageUrl = window.location.href;
-    const params = new URLSearchParams({ u: pageUrl });
-    if (share.text.trim()) {
-      params.set("quote", share.text);
+  async function copyShareText() {
+    const text = share.text.trim();
+    if (!text) {
+      setCopyMessage(null);
+      return;
     }
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyMessage("הטקסט הועתק — ניתן להדביק אותו בפוסט");
+    } catch {
+      setCopyMessage(null);
+    }
+  }
+
+  async function shareToFacebook() {
+    await copyShareText();
+    const pageUrl = window.location.href;
     window.open(
-      `https://www.facebook.com/sharer/sharer.php?${params.toString()}`,
+      `https://www.facebook.com/sharer/sharer.php?${new URLSearchParams({ u: pageUrl }).toString()}`,
       "_blank",
       "noopener,noreferrer",
     );
@@ -56,12 +66,7 @@ export function ShareSection({ share }: { share: ShareSettings }) {
       }
     }
 
-    try {
-      await navigator.clipboard.writeText(text ? `${text}\n${pageUrl}` : pageUrl);
-      setCopyMessage("הטקסט הועתק — ניתן להדביק באינסטגרם");
-    } catch {
-      setCopyMessage(null);
-    }
+    await copyShareText();
     window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
   }
 
@@ -72,17 +77,21 @@ export function ShareSection({ share }: { share: ShareSettings }) {
         <button
           type="button"
           onClick={shareToFacebook}
-          className="flex items-center justify-center gap-3 rounded-xl bg-[#1877F2] px-4 py-4 text-white transition hover:bg-[#1567d9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          className="flex items-center justify-center gap-3 rounded-xl border border-foreground/10 px-4 py-4 text-foreground transition hover:bg-foreground/[0.05] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
         >
-          <FacebookIcon />
+          <span className="text-[#1877F2]">
+            <FacebookIcon />
+          </span>
           <span className="text-base font-medium">שיתוף בפייסבוק</span>
         </button>
         <button
           type="button"
           onClick={shareToInstagram}
-          className="flex items-center justify-center gap-3 rounded-xl bg-[#E1306C] px-4 py-4 text-white transition hover:bg-[#d4295f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          className="flex items-center justify-center gap-3 rounded-xl border border-foreground/10 px-4 py-4 text-foreground transition hover:bg-foreground/[0.05] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
         >
-          <InstagramIcon />
+          <span className="text-[#E1306C]">
+            <InstagramIcon />
+          </span>
           <span className="text-base font-medium">שיתוף באינסטגרם</span>
         </button>
         {copyMessage ? (
