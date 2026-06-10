@@ -27,23 +27,25 @@ function LogoPlaceholderIcon() {
  */
 export function LogoSection({ logo }: { logo: Logo }) {
   return (
-    <section className="flex w-full flex-col items-center gap-3 px-6 pt-12 pb-6 sm:pt-16">
+    <section className="flex w-full flex-col items-center gap-3 pb-6">
       {logo.imageUrl ? (
-        <div className="relative h-28 w-28 sm:h-32 sm:w-32">
+        <div className="relative h-56 w-full sm:h-72">
           <Image
             src={logo.imageUrl}
             alt={logo.title}
             fill
-            sizes="(min-width: 640px) 8rem, 7rem"
-            className="object-contain"
+            sizes="100vw"
+            className="object-cover"
             priority
           />
         </div>
       ) : (
-        <EmptyState message="הלוגו יתווסף בקרוב" icon={<LogoPlaceholderIcon />} />
+        <div className="px-6 pt-12 sm:pt-16">
+          <EmptyState message="הלוגו יתווסף בקרוב" icon={<LogoPlaceholderIcon />} />
+        </div>
       )}
       {logo.title ? (
-        <p className="text-center text-lg font-medium text-foreground">{logo.title}</p>
+        <p className="px-6 text-center text-lg font-medium text-foreground">{logo.title}</p>
       ) : null}
     </section>
   );
