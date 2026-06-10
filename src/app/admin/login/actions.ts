@@ -14,10 +14,15 @@ export async function loginAction(
   const password = String(formData.get("password") ?? "");
   const adminPassword = process.env.ADMIN_PASSWORD ?? "";
 
-  // Constant-time comparison prevents timing-based password oracle attacks
+  // Constant-time comparison prevents timing-based password oracle attacks.
+  // Compare byte lengths (not string lengths) since multi-byte characters
+  // can make `.length` match while Buffer byte lengths differ.
+  const passwordBuf = Buffer.from(password, "utf-8");
+  const adminPasswordBuf = Buffer.from(adminPassword, "utf-8");
+
   let match = false;
-  if (adminPassword.length > 0 && password.length === adminPassword.length) {
-    match = timingSafeEqual(Buffer.from(password), Buffer.from(adminPassword));
+  if (adminPasswordBuf.length > 0 && passwordBuf.length === adminPasswordBuf.length) {
+    match = timingSafeEqual(passwordBuf, adminPasswordBuf);
   }
 
   if (!match) {
